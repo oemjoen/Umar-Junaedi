@@ -26,6 +26,9 @@ In the repository settings, open **Pages**, choose **GitHub Actions** as the sou
 
 ## Portfolio PDF
 
+- [Download portfolio PDF](https://oemjoen.github.io/Umar-Junaedi/Umar-Junaedi-Portfolio.pdf)
+- [Download detailed CV PDF](https://oemjoen.github.io/Umar-Junaedi/Umar-Junaedi-CV.pdf)
+
 - [Download professional portfolio PDF](https://oemjoen.github.io/Umar-Junaedi/Umar-Junaedi-Portfolio.pdf)
 
 ## Contact
