@@ -24,6 +24,10 @@ In the repository settings, open **Pages**, choose **GitHub Actions** as the sou
 - [LinkedIn](https://www.linkedin.com/in/umar-junaedi-b1b0233a/)
 - [Jobstreet](https://id.jobstreet.com/id/profiles/umar-junaedi-dJKS6WzvSw)
 
+## Portfolio PDF
+
+- [Download professional portfolio PDF](https://oemjoen.github.io/Umar-Junaedi/Umar-Junaedi-Portfolio.pdf)
+
 ## Contact
 
 - Email: [umarjunaedi@gmail.com](mailto:umarjunaedi@gmail.com)
