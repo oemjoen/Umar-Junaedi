@@ -32,3 +32,11 @@ In the repository settings, open **Pages**, choose **GitHub Actions** as the sou
 - [GitHub](https://github.com/oemjoen)
 
 The portfolio uses the public GitHub profile image as its default profile photo.
+
+## Language behavior
+
+The site defaults to Indonesian for Indonesian browser time zones, switches to English when a non-Indonesian time zone is detected, and falls back to Indonesian when location data is unavailable or invalid. Visitors can override the choice with the ID/EN switcher.
+
+## WhatsApp
+
+- WhatsApp: [0812 2226 4053](https://wa.me/6281222264053)
