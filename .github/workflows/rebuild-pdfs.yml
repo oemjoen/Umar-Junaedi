@@ -59,6 +59,13 @@ jobs:
               'Umar-Junaedi-Portfolio-ID.pdf': (2, '781815694dbf06ab124d8798f4aaa584a450c199'),
               'Umar-Junaedi-Portfolio-EN.pdf': (2, 'f7627e54ff64b8ceddf0fd04e8f429b96928845f'),
           }
+          required_markers = (
+              'Umar Junaedi',
+              'Senior IT Manager',
+              'ERP TMS - Laravel Modernization',
+              'Tirta AI Data & System Analysis Dashboard',
+          )
+
           for name, (pages, expected_hash) in expected.items():
               p = Path(name)
               if not p.exists() or p.stat().st_size < 5000:
@@ -72,7 +79,7 @@ jobs:
               if actual != expected_hash:
                   raise SystemExit(f'Hash mismatch for {name}: {actual} != {expected_hash}')
               text = ''.join((page.extract_text() or '') for page in reader.pages)
-              for marker in ('Umar Junaedi', 'Senior IT Manager'):
+              for marker in required_markers:
                   if marker not in text:
                       raise SystemExit(f'Missing content marker {marker!r} in {name}')
               print(f'PASS {name}: pages={pages}, hash={actual}')
