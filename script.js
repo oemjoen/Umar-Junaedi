@@ -63,6 +63,39 @@ const translations = new Map([
   ['Foto profil Umar Junaedi', 'Profile photo of Umar Junaedi']
 ]);
 
+const oemjoeProjects = [
+  {
+    key: 'tms-erp-php82',
+    number: '05',
+    category: 'systems',
+    visualClass: 'visual-cyan',
+    kicker: 'ERP / MODERNIZATION',
+    code: 'TMS—ERP',
+    metaId: 'Modernisasi enterprise',
+    metaEn: 'Enterprise modernization',
+    title: 'ERP TMS — Laravel Modernization',
+    descriptionId: 'Modernisasi ERP/TMS operasional transportasi ke PHP 8.2 dan Laravel 12, mencakup P2H, maintenance, procurement, finance, approval, audit trail, Docker, dan deployment staging.',
+    descriptionEn: 'Modernization of a transportation ERP/TMS to PHP 8.2 and Laravel 12, covering P2H, maintenance, procurement, finance, approvals, audit trails, Docker, and staging deployment.',
+    tags: ['Laravel 12', 'PHP 8.2', 'MariaDB', 'Docker', 'Nginx'],
+    url: 'https://github.com/oemjoe/tms-erp-php82'
+  },
+  {
+    key: 'ai-dashboard',
+    number: '06',
+    category: 'product',
+    visualClass: 'visual-purple',
+    kicker: 'AI / DATA PLATFORM',
+    code: 'AI—DATA',
+    metaId: 'AI & data analysis',
+    metaEn: 'AI & data analysis',
+    title: 'Tirta AI Data & System Analysis Dashboard',
+    descriptionId: 'Platform Laravel untuk analisis data dan sistem terpusat, executive summary, source-code analysis, database catalog, serta abstraction AI provider untuk Groq, Gemini, dan Ollama.',
+    descriptionEn: 'A Laravel platform for centralized data and system analysis, executive summaries, source-code analysis, database cataloging, and AI-provider abstraction for Groq, Gemini, and Ollama.',
+    tags: ['Laravel 13', 'AI', 'Groq', 'Gemini', 'Ollama', 'Redis'],
+    url: 'https://github.com/oemjoe/ai-dashboard'
+  }
+];
+
 function preserveWhitespace(original, replacement) {
   const leading = original.match(/^\s*/)?.[0] || '';
   const trailing = original.match(/\s*$/)?.[0] || '';
@@ -92,6 +125,52 @@ function detectedLanguage() {
   } catch (error) {
     return 'id';
   }
+}
+
+function ensureOemjoeProfileLink(language) {
+  const contactLinks = document.querySelector('.contact-links');
+  if (!contactLinks) return;
+
+  let link = contactLinks.querySelector('[data-oemjoe-profile]');
+  if (!link) {
+    link = document.createElement('a');
+    link.href = 'https://github.com/oemjoe';
+    link.target = '_blank';
+    link.rel = 'noreferrer';
+    link.dataset.oemjoeProfile = 'true';
+    contactLinks.appendChild(link);
+  }
+  link.innerHTML = `<span>${language === 'en' ? 'GitHub Projects · oemjoe' : 'Project GitHub · oemjoe'}</span><span>↗</span>`;
+}
+
+function renderOemjoeProjects(language) {
+  const grid = document.querySelector('.project-grid');
+  if (!grid) return;
+
+  oemjoeProjects.forEach(project => {
+    let card = grid.querySelector(`[data-oemjoe-project="${project.key}"]`);
+    if (!card) {
+      card = document.createElement('article');
+      card.className = 'project-card reveal';
+      card.dataset.oemjoeProject = project.key;
+      card.dataset.category = project.category;
+      grid.appendChild(card);
+    }
+
+    const description = language === 'en' ? project.descriptionEn : project.descriptionId;
+    const meta = language === 'en' ? project.metaEn : project.metaId;
+    card.innerHTML = `
+      <div class="project-visual ${project.visualClass}"><span>${project.kicker}</span><b>${project.code}</b></div>
+      <div class="project-body">
+        <div class="project-meta"><span>${project.number}</span><span>${meta}</span></div>
+        <h3>${project.title}</h3>
+        <p>${description}</p>
+        <div class="tag-row">${project.tags.map(tag => `<span>${tag}</span>`).join('')}</div>
+        <a class="text-link" href="${project.url}" target="_blank" rel="noreferrer">${language === 'en' ? 'View repository ↗' : 'Lihat repository ↗'}</a>
+      </div>`;
+  });
+
+  ensureOemjoeProfileLink(language);
 }
 
 function updateControlLabels(language) {
@@ -134,6 +213,7 @@ function setLanguage(language, persist = false) {
     item.node.nodeValue = selected === 'en' ? item.en : item.id;
   });
 
+  renderOemjoeProjects(selected);
   updateControlLabels(selected);
   if (persist) localStorage.setItem('umar-language', selected);
 }
