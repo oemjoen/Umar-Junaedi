@@ -198,6 +198,13 @@ function updateControlLabels(language) {
   }
 }
 
+function updatePdfLinks(language) {
+  const suffix = language === 'en' ? 'EN' : 'ID';
+  document.querySelectorAll('a.pdf-link').forEach(link => {
+    link.href = `Umar-Junaedi-Portfolio-${suffix}.pdf`;
+  });
+}
+
 function setLanguage(language, persist = false) {
   const selected = language === 'en' ? 'en' : 'id';
   document.documentElement.lang = selected;
@@ -214,6 +221,7 @@ function setLanguage(language, persist = false) {
   });
 
   renderOemjoeProjects(selected);
+  updatePdfLinks(selected);
   updateControlLabels(selected);
   if (persist) localStorage.setItem('umar-language', selected);
 }
