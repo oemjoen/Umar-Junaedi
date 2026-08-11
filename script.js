@@ -19,6 +19,7 @@ const translations = new Map([
   ['tahun di IT', 'years in IT'],
   ['tahun memimpin', 'years in leadership'],
   ['Cimahi, Jawa Barat', 'Cimahi, West Java'],
+  ['ID · JAWA BARAT', 'ID · WEST JAVA'],
   ['01 / Tentang saya', '01 / About me'],
   ['Teknologi yang dekat dengan', 'Technology close to'],
   ['operasi.', 'operations.'],
