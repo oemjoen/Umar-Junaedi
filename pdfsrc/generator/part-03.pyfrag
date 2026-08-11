@@ -1,0 +1,95 @@
+        'meta': ParagraphStyle('Meta', parent=s['BodyText'], fontName='Helvetica-Bold', fontSize=7.8, leading=10, textColor=MUTED, spaceAfter=2),
+        'bullet': ParagraphStyle('BulletX', parent=s['BodyText'], fontName='Helvetica', fontSize=8.7, leading=12.2, leftIndent=9, firstLineIndent=-6, textColor=BLACK, spaceAfter=2),
+        'sectionnote': ParagraphStyle('SectionNote', parent=s['BodyText'], fontName='Helvetica', fontSize=8.5, leading=12, textColor=MUTED, spaceAfter=6),
+        'tag': ParagraphStyle('Tag', parent=s['BodyText'], fontName='Helvetica-Bold', fontSize=7.4, leading=9.2, textColor=CYAN, spaceAfter=2),
+        'coverbig': ParagraphStyle('CoverBig', parent=s['Title'], fontName='Helvetica-Bold', fontSize=34, leading=38, textColor=NAVY, spaceAfter=8),
+        'coverlead': ParagraphStyle('CoverLead', parent=s['BodyText'], fontName='Helvetica', fontSize=13, leading=19, textColor=SLATE, spaceAfter=12),
+    }
+
+
+def link(text, url):
+    return f'<link href="{escape(url)}" color="#2563EB"><u>{escape(text)}</u></link>'
+
+
+def contact_para(lang, st):
+    wa = CONTACTS['wa_display_id'] if lang=='id' else CONTACTS['wa_display_en']
+    parts = [
+        f"Email: {link(CONTACTS['email'], 'mailto:'+CONTACTS['email'])}",
+        f"WhatsApp: {link(wa, CONTACTS['wa_url'])}",
+        link('LinkedIn', CONTACTS['linkedin']),
+        link('Jobstreet', CONTACTS['jobstreet']),
+        link('GitHub oemjoen', CONTACTS['github_main']),
+        link('GitHub oemjoe', CONTACTS['github_projects'])
+    ]
+    return Paragraph(' &nbsp; | &nbsp; '.join(parts), st['contact'])
+
+
+def section_title(text, st):
+    return [Spacer(1, 3), HRFlowable(width='100%', thickness=0.6, color=LINE, spaceBefore=4, spaceAfter=4), Paragraph(escape(text), st['h1'])]
+
+
+def two_col_cards(items, st):
+    rows=[]
+    for i in range(0,len(items),2):
+        row=[]
+        for item in items[i:i+2]:
+            title, body = item
+            cell=[Paragraph(escape(title), st['h2']), Paragraph(escape(body), st['small'])]
+            row.append(cell)
+        if len(row)==1: row.append('')
+        rows.append(row)
+    t=Table(rows, colWidths=[87*mm,87*mm], hAlign='LEFT')
+    t.setStyle(TableStyle([
+        ('VALIGN',(0,0),(-1,-1),'TOP'),
+        ('BOX',(0,0),(-1,-1),0.35,LINE),
+        ('INNERGRID',(0,0),(-1,-1),0.25,LINE),
+        ('BACKGROUND',(0,0),(-1,-1),LIGHT),
+        ('LEFTPADDING',(0,0),(-1,-1),8),('RIGHTPADDING',(0,0),(-1,-1),8),
+        ('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),7),
+    ]))
+    return t
+
+
+def build_cv(lang, path):
+    st=styles_for(lang)
+    doc=SimpleDocTemplate(path, pagesize=A4, rightMargin=16*mm,leftMargin=16*mm, topMargin=15*mm,bottomMargin=18*mm,
+                          title=f"Umar Junaedi - {'CV Lengkap' if lang=='id' else 'Full CV'}", author='Umar Junaedi')
+    story=[]
+    story.append(Paragraph('Umar Junaedi', st['title']))
+    story.append(Paragraph('Senior IT Manager | Enterprise Systems | Digital Transformation | Infrastructure', st['subtitle']))
+    story.append(contact_para(lang, st))
+    story.append(Paragraph('Cimahi, West Java, Indonesia', st['contact']))
+    story += section_title('Ringkasan Profesional' if lang=='id' else 'Professional Summary', st)
+    summary_id=('Pemimpin teknologi yang bekerja di antara strategi, produk, dan eksekusi teknis. Dengan pengalaman lebih dari 20 tahun di bidang IT dan lebih dari 10 tahun memimpin, fokus saya adalah membangun sistem yang dekat dengan operasi nyata: ERP, HRIS, FMS/WMS, infrastruktur, integrasi, automation, service reliability, dan transformasi digital untuk logistik, distribusi, fleet, warehouse, serta pendidikan.')
+    summary_en=('Technology leader working across strategy, product, and technical execution. With more than 20 years in IT and more than 10 years in leadership, I focus on systems that stay close to real operations: ERP, HRIS, FMS/WMS, infrastructure, integrations, automation, service reliability, and digital transformation across logistics, distribution, fleet, warehouse, and education.')
+    story.append(Paragraph(escape(summary_id if lang=='id' else summary_en), st['body']))
+    cards_id=[
+        ('Leadership & Strategy','IT budgeting, work plans, KPI, vendor management, prioritization, governance, and cross-functional alignment.'),
+        ('Build & Integrate','PHP, Laravel, CodeIgniter, JavaScript, React/React Native, REST API, MySQL/MariaDB, workflow automation.'),
+        ('Run & Improve','Ubuntu Server, Apache/Nginx, Docker, monitoring, security, backups, incident and service management.'),
+        ('Enterprise Domains','ERP, HRIS, FMS, WMS, procurement, finance, payroll, fleet, warehouse, distribution, education technology.')
+    ]
+    cards_en=cards_id
+    story.append(two_col_cards(cards_id if lang=='id' else cards_en, st))
+
+    story += section_title('Pengalaman Profesional' if lang=='id' else 'Professional Experience', st)
+    for exp in EXPERIENCE:
+        period=exp['period_id'] if lang=='id' else exp['period_en']
+        story.append(KeepTogether([
+            Paragraph(escape(f"{exp['role']} - {exp['company']}"), st['h2']),
+            Paragraph(escape(period), st['meta'])
+        ]))
+        for b in exp['bullets_id' if lang=='id' else 'bullets_en']:
+            story.append(Paragraph('- '+escape(b), st['bullet']))
+        story.append(Spacer(1,4))
+
+    story += section_title('Selected Delivery' if lang=='en' else 'Karya / Delivery Terpilih', st)
+    for p in SELECTED:
+        desc=p['id'] if lang=='id' else p['en']
+        title=escape(p['title'])
+        if p['url']:
+            title=link(p['title'],p['url'])
+        block=[Paragraph(title, st['h2']), Paragraph(escape(desc), st['body']), Paragraph(escape(p['tags']), st['tag'])]
+        story.append(KeepTogether(block))
+
+    story += section_title('Pendidikan & Kompetensi' if lang=='id' else 'Education & Core Competencies', st)

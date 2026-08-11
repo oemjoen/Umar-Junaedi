@@ -1,0 +1,100 @@
+name: Rebuild verified CV PDFs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'pdfsrc/generator/**'
+      - '.github/workflows/rebuild-pdfs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rebuild-pdfs
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PDF dependencies
+        run: python -m pip install --disable-pip-version-check reportlab==4.4.9 pypdf==6.1.1
+
+      - name: Assemble generator
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat pdfsrc/generator/part-*.pyfrag > /tmp/build_portfolio_pdfs.py
+          python -m py_compile /tmp/build_portfolio_pdfs.py
+
+      - name: Build bilingual PDFs
+        env:
+          OUT_DIR: .
+        run: python /tmp/build_portfolio_pdfs.py
+
+      - name: Validate PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from pypdf import PdfReader
+          import subprocess
+
+          expected = {
+              'Umar-Junaedi-CV-ID.pdf': (5, '68346f26ca4e19dddd73380ae6bb9dc14292624d'),
+              'Umar-Junaedi-CV-EN.pdf': (5, 'bed2842561f384eb3e1cd0655bcb88c8b30f8966'),
+              'Umar-Junaedi-Portfolio-ID.pdf': (3, '6c2b2a9d15daa2bdccd5bb7dfc4040e98088e67b'),
+              'Umar-Junaedi-Portfolio-EN.pdf': (3, '0d515e224c4a2a4e9a568434cc542b2dfd61664f'),
+          }
+          for name, (pages, expected_hash) in expected.items():
+              p = Path(name)
+              if not p.exists() or p.stat().st_size < 5000:
+                  raise SystemExit(f'Invalid or missing PDF: {name}')
+              reader = PdfReader(str(p))
+              if reader.is_encrypted:
+                  raise SystemExit(f'Encrypted PDF: {name}')
+              if len(reader.pages) != pages:
+                  raise SystemExit(f'Unexpected page count for {name}: {len(reader.pages)}')
+              actual = subprocess.check_output(['git','hash-object',name], text=True).strip()
+              if actual != expected_hash:
+                  raise SystemExit(f'Hash mismatch for {name}: {actual} != {expected_hash}')
+              text = ''.join((page.extract_text() or '') for page in reader.pages)
+              for marker in ('Umar Junaedi', 'Senior IT Manager'):
+                  if marker not in text:
+                      raise SystemExit(f'Missing content marker {marker!r} in {name}')
+              print(f'PASS {name}: pages={pages}, hash={actual}')
+
+          if Path('Umar-Junaedi-CV.pdf').read_bytes() != Path('Umar-Junaedi-CV-ID.pdf').read_bytes():
+              raise SystemExit('CV backward-compatible alias mismatch')
+          if Path('Umar-Junaedi-Portfolio.pdf').read_bytes() != Path('Umar-Junaedi-Portfolio-ID.pdf').read_bytes():
+              raise SystemExit('Portfolio backward-compatible alias mismatch')
+          print('PASS backward-compatible aliases')
+          PY
+
+      - name: Commit exact PDFs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Umar-Junaedi-CV-ID.pdf Umar-Junaedi-CV-EN.pdf Umar-Junaedi-CV.pdf \
+                  Umar-Junaedi-Portfolio-ID.pdf Umar-Junaedi-Portfolio-EN.pdf Umar-Junaedi-Portfolio.pdf
+          if git diff --cached --quiet; then
+            echo 'PDF binaries already exact; no commit needed.'
+            exit 0
+          fi
+          git commit -m 'Rebuild exact bilingual PDF binaries'
+          git push

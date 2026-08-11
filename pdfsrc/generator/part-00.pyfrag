@@ -1,0 +1,98 @@
+from reportlab import rl_config
+rl_config.invariant = 1
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak,
+    KeepTogether, HRFlowable
+)
+from reportlab.pdfbase.pdfmetrics import stringWidth
+from reportlab.lib.colors import HexColor
+from xml.sax.saxutils import escape
+import os, shutil
+
+OUT = os.environ.get('OUT_DIR', '.')
+
+NAVY = HexColor('#0F172A')
+BLUE = HexColor('#2563EB')
+CYAN = HexColor('#0891B2')
+SLATE = HexColor('#475569')
+LIGHT = HexColor('#F8FAFC')
+LINE = HexColor('#CBD5E1')
+MUTED = HexColor('#64748B')
+WHITE = colors.white
+BLACK = HexColor('#111827')
+
+CONTACTS = {
+    'email': 'umarjunaedi@gmail.com',
+    'wa_display_id': '0812 2226 4053',
+    'wa_display_en': '+62 812-2226-4053',
+    'wa_url': 'https://wa.me/6281222264053',
+    'linkedin': 'https://www.linkedin.com/in/umar-junaedi-b1b0233a/',
+    'jobstreet': 'https://id.jobstreet.com/id/profiles/umar-junaedi-dJKS6WzvSw',
+    'github_main': 'https://github.com/oemjoen',
+    'github_projects': 'https://github.com/oemjoe',
+    'portfolio': 'https://oemjoen.github.io/Umar-Junaedi/'
+}
+
+EXPERIENCE = [
+    {
+        'period_id': 'Mar 2021 - Sekarang', 'period_en': 'Mar 2021 - Present',
+        'role': 'Senior Information Technology Manager', 'company': 'PT Tirta Nusa Persada',
+        'bullets_id': [
+            'Menyusun anggaran tahunan, rencana kerja, prioritas, timetable, dan KPI tim IT.',
+            'Mengelola vendor, budget monitoring, work-plan monitoring, dan dukungan IT sehari-hari.',
+            'Memimpin pengembangan ERP untuk ekosistem logistik, termasuk GPS Tracking, WMS, Fuel Management, P2H, Tire Management, dan Fleet Management.',
+            'Menghubungkan kebutuhan pengguna, proses bisnis, data, dan keputusan teknologi; turut terlibat langsung dalam pengembangan sistem bila diperlukan.'
+        ],
+        'bullets_en': [
+            'Own annual IT budgeting, work planning, priorities, timetables, and team KPI management.',
+            'Manage vendors, budget and work-plan monitoring, and day-to-day IT support operations.',
+            'Lead ERP development for a logistics ecosystem, including GPS Tracking, WMS, Fuel Management, P2H, Tire Management, and Fleet Management.',
+            'Connect user needs, business processes, data, and technology decisions, while contributing directly to system development when needed.'
+        ]
+    },
+    {
+        'period_id': 'Jan 2013 - Mar 2020', 'period_en': 'Jan 2013 - Mar 2020',
+        'role': 'IT Manager', 'company': 'PT Sapta Sari Tama',
+        'bullets_id': [
+            'Membangun sistem informasi terintegrasi untuk perusahaan farmasi dari proses manual menjadi aplikasi yang disesuaikan dengan kebutuhan bisnis.',
+            'Mengembangkan dan mengintegrasikan SST ERP, GPS Call Salesman, GPS Collector, SST BPOM-Kemenkes, SST APMITRA, SST GL, dan HALLOBIDAN.',
+            'Menyusun IT strategic plan, mengelola vendor, proyek besar, anggaran, prioritas, standar, prosedur, dan kinerja IT.',
+            'Mengkoordinasikan prioritas antara departemen IT dan user serta memastikan kecukupan sumber daya IT.'
+        ],
+        'bullets_en': [
+            'Built integrated information systems for a pharmaceutical distribution company, replacing manual processes with tailored applications.',
+            'Developed and integrated SST ERP, GPS Call Salesman, GPS Collector, SST BPOM-Kemenkes, SST APMITRA, SST GL, and HALLOBIDAN.',
+            'Owned IT strategic planning, vendor management, major projects, budgets, priorities, standards, procedures, and performance.',
+            'Coordinated priorities between IT and business departments and assessed resource adequacy.'
+        ]
+    },
+    {
+        'period_id': 'Sebelumnya', 'period_en': 'Earlier career',
+        'role': 'Application Consultant, IT Analyst, Implementor & Support',
+        'company': 'PT Kontinum Era Artha, PT Victoria Care Indonesia, UJKS KOPPAS Tanah Abang, DPU DKI Jakarta',
+        'bullets_id': [
+            'Assistant Project Manager untuk system requirements, user requirements, project preparation, QA, implementasi, dan support.',
+            'Lead Application Support untuk penjadwalan support, severity issue, root-cause analysis, resolution, dokumentasi, dan reporting.',
+            'Pengalaman implementasi, QA/support, network, financial software, database/reporting, programming, installation, maintenance, dan deployment aplikasi.'
+        ],
+        'bullets_en': [
+            'Worked as Assistant Project Manager across system requirements, user requirements, project preparation, QA, implementation, and support.',
+            'Led application support scheduling, issue severity management, root-cause analysis, resolution, documentation, and reporting.',
+            'Built hands-on experience in implementation, QA/support, networking, financial software, databases/reporting, programming, installation, maintenance, and deployment.'
+        ]
+    }
+]
+
+PROJECTS = [
+    ('01','Trucking Management System','Sep 2023 - Apr 2024','PT Tirta Nusa Persada',
+     'TMS full-cycle: P2H, logbook, maintenance, spare part management, integrasi GPS melalui API, serta proses inbound dan outbound.',
+     'Full-cycle TMS covering P2H, logbook, maintenance, spare-parts management, GPS API integration, and inbound/outbound operations.',
+     'Project Manager & Developer','Apache 2.0, Ubuntu Server 16.04, PHP 7.0, CodeIgniter 3, MySQL 5.6, Android/PWA',None),
+    ('02','Warehouse & Stuffing Management System','Jan 2022 - Mar 2022','PT Tirta Nusa Persada',
+     'WMS full-cycle yang mencakup trucking dan sistem tracking.',
+     'Full-cycle WMS covering trucking and tracking capabilities.',

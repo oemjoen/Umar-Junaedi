@@ -1,0 +1,78 @@
+     'Modernisasi ERP/TMS operasional transportasi ke PHP 8.2 dan Laravel 12, mencakup P2H, mechanical inspection, maintenance, procurement, purchase order, finance, invoice, approval flow, export PDF/Excel, QR code, audit trail, Docker, dan staging deployment.',
+     'Modernization of a transportation ERP/TMS to PHP 8.2 and Laravel 12, covering P2H, mechanical inspection, maintenance, procurement, purchase orders, finance, invoicing, approval flows, PDF/Excel exports, QR codes, audit trails, Docker, and staging deployment.',
+     'Project / System Modernization','Laravel 12, PHP 8.2, MariaDB, Docker, Nginx, Tailwind CSS 4','https://github.com/oemjoe/tms-erp-php82'),
+    ('20','Tirta AI Data & System Analysis Dashboard','Current','GitHub: oemjoe/ai-dashboard',
+     'Platform Laravel untuk analisis data dan sistem terpusat, executive summary, Ask Data, database catalog, source-code analysis, health endpoint, role/permission, serta abstraction AI provider untuk Groq, Gemini, dan Ollama.',
+     'Laravel platform for centralized data and system analysis, executive summaries, Ask Data, database cataloging, source-code analysis, health endpoints, roles/permissions, and AI-provider abstraction for Groq, Gemini, and Ollama.',
+     'Architecture / Development','Laravel 13, AI, Groq, Gemini, Ollama, Redis, Docker','https://github.com/oemjoe/ai-dashboard'),
+]
+
+SELECTED = [
+    {
+        'title':'SiBK Online',
+        'id':'Platform bimbingan dan konseling sekolah multi-school dengan modul pemetaan siswa, assessment, minat-karier, dan fondasi pengembangan produk berkelanjutan.',
+        'en':'Multi-school counseling platform with student mapping, assessments, career-interest modules, and a foundation for continuous product development.',
+        'tags':'PHP, CodeIgniter, MySQL, Multi-tenant',
+        'url':'https://github.com/oemjoen/SiBK-Online'
+    },
+    {
+        'title':'ERP TMS - Laravel Modernization',
+        'id':'Modernisasi sistem transportasi enterprise ke PHP 8.2/Laravel 12 dengan Docker, Nginx, MariaDB, role-permission, approval, audit, procurement, finance, dan operational modules.',
+        'en':'Modernizing an enterprise transportation platform to PHP 8.2/Laravel 12 with Docker, Nginx, MariaDB, role-permission, approvals, auditing, procurement, finance, and operations modules.',
+        'tags':'Laravel 12, PHP 8.2, MariaDB, Docker, Nginx',
+        'url':'https://github.com/oemjoe/tms-erp-php82'
+    },
+    {
+        'title':'Tirta AI Data & System Analysis Dashboard',
+        'id':'Dashboard analisis data/sistem dengan AI-provider abstraction, executive summary, Ask Data, database catalog, source-code analysis, health endpoints, dan Docker baseline.',
+        'en':'Data and system analysis dashboard with AI-provider abstraction, executive summaries, Ask Data, database catalog, source-code analysis, health endpoints, and Docker baseline.',
+        'tags':'Laravel 13, Groq, Gemini, Ollama, Redis, Docker',
+        'url':'https://github.com/oemjoe/ai-dashboard'
+    },
+    {
+        'title':'ERP / HRIS / FMS / WMS Ecosystem',
+        'id':'Integrasi sistem untuk sales, finance, payroll, fleet, warehouse, attendance, approval, GPS tracking, dan operasi distribusi/logistik.',
+        'en':'Integrated systems across sales, finance, payroll, fleet, warehouse, attendance, approvals, GPS tracking, and logistics/distribution operations.',
+        'tags':'ERP, HRIS, FMS, WMS, REST API, MariaDB',
+        'url':None
+    },
+    {
+        'title':'WhatsApp Operations Gateway',
+        'id':'Gateway percakapan untuk akses informasi operasional, reminder approval, workflow automation, dan integrasi API.',
+        'en':'Conversational gateway for operational information, approval reminders, workflow automation, and API integrations.',
+        'tags':'n8n, WAHA, REST API, AI-ready',
+        'url':None
+    },
+    {
+        'title':'Infrastructure & Reliability',
+        'id':'Operasional server Linux, Apache, Docker, deployment, monitoring service availability, security, backup, dan incident troubleshooting.',
+        'en':'Linux server operations, Apache, Docker, deployment, service-availability monitoring, security, backups, and incident troubleshooting.',
+        'tags':'Ubuntu, Apache, Docker, Cloudflare, Monitoring, Security',
+        'url':None
+    }
+]
+
+
+def page_footer(canvas, doc, lang):
+    canvas.saveState()
+    w, h = A4
+    canvas.setStrokeColor(LINE)
+    canvas.setLineWidth(0.35)
+    canvas.line(16*mm, 13*mm, w-16*mm, 13*mm)
+    canvas.setFont('Helvetica', 7.5)
+    canvas.setFillColor(MUTED)
+    canvas.drawString(16*mm, 8*mm, 'Umar Junaedi - Senior IT Manager')
+    canvas.drawRightString(w-16*mm, 8*mm, f"{('Halaman' if lang=='id' else 'Page')} {doc.page}")
+    canvas.restoreState()
+
+
+def styles_for(lang):
+    s = getSampleStyleSheet()
+    return {
+        'title': ParagraphStyle('TitleX', parent=s['Title'], fontName='Helvetica-Bold', fontSize=27, leading=31, textColor=NAVY, spaceAfter=4),
+        'subtitle': ParagraphStyle('Subtitle', parent=s['Normal'], fontName='Helvetica', fontSize=11.5, leading=15, textColor=BLUE, spaceAfter=8),
+        'contact': ParagraphStyle('Contact', parent=s['Normal'], fontName='Helvetica', fontSize=8.7, leading=12, textColor=SLATE, spaceAfter=4),
+        'h1': ParagraphStyle('H1x', parent=s['Heading1'], fontName='Helvetica-Bold', fontSize=16, leading=20, textColor=NAVY, spaceBefore=12, spaceAfter=7),
+        'h2': ParagraphStyle('H2x', parent=s['Heading2'], fontName='Helvetica-Bold', fontSize=11.5, leading=14, textColor=BLUE, spaceBefore=7, spaceAfter=4),
+        'body': ParagraphStyle('BodyX', parent=s['BodyText'], fontName='Helvetica', fontSize=9.1, leading=13.0, textColor=BLACK, spaceAfter=5),
+        'small': ParagraphStyle('Small', parent=s['BodyText'], fontName='Helvetica', fontSize=7.9, leading=10.6, textColor=SLATE, spaceAfter=3),

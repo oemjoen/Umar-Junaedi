@@ -1,0 +1,60 @@
+    for exp in EXPERIENCE:
+        period=exp['period_id'] if lang=='id' else exp['period_en']
+        story.append(Paragraph(escape(exp['role']),st['h2']))
+        story.append(Paragraph(escape(f"{exp['company']} | {period}"),st['meta']))
+        story.append(Paragraph(escape((exp['bullets_id'] if lang=='id' else exp['bullets_en'])[0]),st['small']))
+
+    story.append(PageBreak())
+    story.append(Paragraph('Selected Work' if lang=='en' else 'Karya Terpilih',st['title']))
+    intro=('Representative work across enterprise operations, education technology, automation, modernization, AI, and infrastructure.' if lang=='en' else 'Contoh karya lintas enterprise operation, education technology, automation, modernisasi, AI, dan infrastruktur.')
+    story.append(Paragraph(escape(intro),st['sectionnote']))
+    for i,p in enumerate(SELECTED,1):
+        desc=p['id'] if lang=='id' else p['en']
+        title_markup=link(f"{i:02d}. {p['title']}",p['url']) if p['url'] else escape(f"{i:02d}. {p['title']}")
+        story.append(KeepTogether([
+            Paragraph(title_markup,st['h2']),
+            Paragraph(escape(desc),st['body']),
+            Paragraph(escape(p['tags']),st['tag'])
+        ]))
+
+    story += section_title('Operating Model' if lang=='en' else 'Cara Kerja',st)
+    model_id=[
+        ('1. Understand','Memahami proses bisnis, pain point, data, user, risiko, dan kebutuhan operasional.'),
+        ('2. Design','Menentukan arsitektur, integrasi, prioritas, standar keamanan, dan delivery plan.'),
+        ('3. Build','Membangun atau memodernisasi aplikasi, API, workflow, deployment, dan dokumentasi.'),
+        ('4. Run & Improve','Monitoring, troubleshooting, support, feedback loop, hardening, dan continuous improvement.')
+    ]
+    model_en=[
+        ('1. Understand','Map business processes, pain points, data, users, risks, and operational needs.'),
+        ('2. Design','Define architecture, integrations, priorities, security standards, and delivery plans.'),
+        ('3. Build','Build or modernize applications, APIs, workflows, deployments, and documentation.'),
+        ('4. Run & Improve','Monitor, troubleshoot, support, harden, and continuously improve services.')
+    ]
+    story.append(two_col_cards(model_id if lang=='id' else model_en,st))
+
+    story += section_title('Technology & Domains',st)
+    story.append(Paragraph(escape('PHP, Laravel, CodeIgniter, JavaScript, React, React Native, REST API, MySQL, MariaDB, Ubuntu Server, Apache, Nginx, Docker, Cloudflare, n8n, monitoring, security, AI provider integration (Groq/Gemini/Ollama), Redis.'),st['body']))
+    story.append(Paragraph(escape('ERP, HRIS, FMS/WMS, fleet, trucking, warehouse, finance, procurement, payroll, attendance, pharmaceutical distribution, education technology, system analysis, data analysis, automation.'),st['body']))
+
+    story += section_title('GitHub & Contact',st)
+    story.append(contact_para(lang,st))
+    story.append(Paragraph(link('Online Portfolio',CONTACTS['portfolio']),st['body']))
+    story.append(Paragraph(link('Current GitHub Projects - oemjoe',CONTACTS['github_projects']),st['body']))
+    story.append(Paragraph(link('Main GitHub - oemjoen',CONTACTS['github_main']),st['body']))
+    doc.build(story,onFirstPage=lambda c,d:page_footer(c,d,lang),onLaterPages=lambda c,d:page_footer(c,d,lang))
+
+
+files=[]
+for lang in ('id','en'):
+    cv_path=os.path.join(OUT,f'Umar-Junaedi-CV-{lang.upper()}.pdf')
+    port_path=os.path.join(OUT,f'Umar-Junaedi-Portfolio-{lang.upper()}.pdf')
+    build_cv(lang,cv_path)
+    build_portfolio(lang,port_path)
+    files += [cv_path,port_path]
+
+# Backward-compatible aliases use Indonesian (site default for Indonesia).
+shutil.copyfile(os.path.join(OUT,'Umar-Junaedi-CV-ID.pdf'),os.path.join(OUT,'Umar-Junaedi-CV.pdf'))
+shutil.copyfile(os.path.join(OUT,'Umar-Junaedi-Portfolio-ID.pdf'),os.path.join(OUT,'Umar-Junaedi-Portfolio.pdf'))
+files += [os.path.join(OUT,'Umar-Junaedi-CV.pdf'),os.path.join(OUT,'Umar-Junaedi-Portfolio.pdf')]
+for f in files:
+    print(f, os.path.getsize(f))

@@ -1,0 +1,77 @@
+    edu = ('S1 Teknik Informatika - Universitas Tarumanagara, 1999-2005' if lang=='id' else 'Bachelor of Informatics - Universitas Tarumanagara, 1999-2005')
+    story.append(Paragraph(escape(edu), st['body']))
+    comp = ('Core: IT leadership, enterprise architecture, digital transformation, business process analysis, service management, operational systems. '
+            'Technology: PHP, Laravel, CodeIgniter, JavaScript, React, React Native, MySQL, MariaDB, REST API, Ubuntu Server, Apache, Nginx, Docker, monitoring, security, n8n, AI integration.')
+    story.append(Paragraph(escape(comp), st['body']))
+
+    story.append(PageBreak())
+    story.append(Paragraph('Project Portfolio - 20 Projects' if lang=='en' else 'Portofolio Project - 20 Project', st['title']))
+    story.append(Paragraph('A consolidated project archive spanning enterprise systems, logistics, pharmaceutical distribution, accounting, mobile distribution, infrastructure, modernization, and AI.' if lang=='en' else 'Arsip project yang mencakup enterprise system, logistik, distribusi farmasi, accounting, mobile distribution, infrastruktur, modernisasi, dan AI.', st['sectionnote']))
+
+    for num,title,period,company,did,den,role,tags,url in PROJECTS:
+        period_show = period
+        if lang=='en' and period=='Periode tidak dicantumkan': period_show='Date not listed'
+        project_title = f"{num}. {title}"
+        title_markup=link(project_title,url) if url else escape(project_title)
+        desc=did if lang=='id' else den
+        company_label='Konteks' if lang=='id' else 'Context'
+        role_label='Peran' if lang=='id' else 'Role'
+        tech_label='Teknologi' if lang=='id' else 'Technology'
+        block=[
+            Paragraph(title_markup, st['h2']),
+            Paragraph(escape(f"{period_show} | {company}"), st['meta']),
+            Paragraph(escape(desc), st['small']),
+            Paragraph(f"<b>{role_label}:</b> {escape(role)} &nbsp;&nbsp; <b>{tech_label}:</b> {escape(tags)}", st['small'])
+        ]
+        story.append(KeepTogether(block))
+        story.append(Spacer(1,2))
+
+    story += section_title('Kontak & Verifikasi' if lang=='id' else 'Contact & Verification', st)
+    story.append(contact_para(lang, st))
+    story.append(Paragraph(link('Online Portfolio', CONTACTS['portfolio']), st['body']))
+    story.append(Paragraph((
+        'Catatan: repository oemjoen berisi portfolio/produk utama, sedangkan oemjoe menampilkan project publik terkini seperti ERP TMS modernization dan AI data/system analysis.' if lang=='id' else
+        'Note: the oemjoen account contains the main portfolio/product repositories, while oemjoe showcases current public projects such as ERP TMS modernization and AI data/system analysis.'
+    ), st['small']))
+    doc.build(story, onFirstPage=lambda c,d:page_footer(c,d,lang), onLaterPages=lambda c,d:page_footer(c,d,lang))
+
+
+def build_portfolio(lang,path):
+    st=styles_for(lang)
+    doc=SimpleDocTemplate(path,pagesize=A4,rightMargin=17*mm,leftMargin=17*mm,topMargin=17*mm,bottomMargin=18*mm,
+                          title=f"Umar Junaedi - {'Portfolio Profesional' if lang=='id' else 'Professional Portfolio'}",author='Umar Junaedi')
+    story=[]
+    story.append(Spacer(1,10*mm))
+    story.append(Paragraph('Umar Junaedi', st['coverbig']))
+    story.append(Paragraph('Senior IT Manager & Enterprise Systems Leader', st['subtitle']))
+    lead_id='Mengubah kebutuhan bisnis menjadi sistem yang bekerja - memimpin strategi IT sekaligus tetap dekat dengan arsitektur, pengembangan, deployment, dan operasi.'
+    lead_en='Turning business needs into systems that work - leading IT strategy while staying close to architecture, development, deployment, and operations.'
+    story.append(Paragraph(escape(lead_id if lang=='id' else lead_en), st['coverlead']))
+    story.append(contact_para(lang,st))
+    story.append(Spacer(1,7*mm))
+    chips=[
+        ['20+','10+','ERP / HRIS / FMS / WMS','Linux / Docker'],
+        [('tahun IT' if lang=='id' else 'years in IT'),('tahun memimpin' if lang=='id' else 'years leading'),('Enterprise Systems'),('Infrastructure & Reliability')]
+    ]
+    t=Table(chips,colWidths=[42*mm,42*mm,46*mm,46*mm])
+    t.setStyle(TableStyle([
+        ('BACKGROUND',(0,0),(-1,0),NAVY),('TEXTCOLOR',(0,0),(-1,0),WHITE),('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),('FONTSIZE',(0,0),(-1,0),13),
+        ('BACKGROUND',(0,1),(-1,1),LIGHT),('TEXTCOLOR',(0,1),(-1,1),SLATE),('FONTNAME',(0,1),(-1,1),'Helvetica'),('FONTSIZE',(0,1),(-1,1),7.5),
+        ('ALIGN',(0,0),(-1,-1),'CENTER'),('VALIGN',(0,0),(-1,-1),'MIDDLE'),('GRID',(0,0),(-1,-1),0.4,LINE),
+        ('TOPPADDING',(0,0),(-1,0),10),('BOTTOMPADDING',(0,0),(-1,0),10),('TOPPADDING',(0,1),(-1,1),6),('BOTTOMPADDING',(0,1),(-1,1),6)
+    ]))
+    story.append(t)
+
+    story += section_title('Profil' if lang=='id' else 'Profile',st)
+    profile_id='Peran saya berada di antara strategi, produk, dan eksekusi teknis. Saya membantu organisasi memetakan proses, memilih pendekatan, membangun solusi, lalu memastikan sistem dapat dipakai sehari-hari dan terus ditingkatkan.'
+    profile_en='My role sits between strategy, product, and technical execution. I help organizations map processes, choose the right approach, build solutions, and keep systems usable and continuously improving.'
+    story.append(Paragraph(escape(profile_id if lang=='id' else profile_en),st['body']))
+    cards=[
+        ('Direction','IT strategy, annual budgeting, work plans, priorities, KPI, vendor management.'),
+        ('Delivery','Enterprise applications, PHP/Laravel/CI, REST API, mobile/web integration, automation.'),
+        ('Reliability','Linux servers, Apache/Nginx, Docker, monitoring, security, backup, incident response.'),
+        ('Transformation','Process mapping, modernization, in-house development, AI/data exploration, multi-system integration.')
+    ]
+    story.append(two_col_cards(cards,st))
+
+    story += section_title('Karier Ringkas' if lang=='id' else 'Career Timeline',st)
