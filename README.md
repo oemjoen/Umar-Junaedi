@@ -12,6 +12,7 @@ Personal portfolio for Umar Junaedi, Senior IT Manager and enterprise systems le
 - Modern CSS with responsive layout, custom properties, reduced-motion support, and dark/light theme
 - Vanilla JavaScript for bilingual ID/EN content, language-aware PDF downloads, theme switching, mobile navigation, reveal animation, and project filtering
 - GitHub Actions + GitHub Pages deployment
+- Reproducible ReportLab-based bilingual PDF generation with automated validation
 
 ## GitHub Pages setup
 
@@ -45,6 +46,14 @@ The site switches the download target automatically according to the selected la
 - [Portfolio - English](https://oemjoen.github.io/Umar-Junaedi/Umar-Junaedi-Portfolio-EN.pdf)
 - [Backward-compatible portfolio link](https://oemjoen.github.io/Umar-Junaedi/Umar-Junaedi-Portfolio.pdf)
 
+## Reproducible PDF build
+
+The PDF source is split into deterministic generator fragments under `pdfsrc/generator/`. The workflow `.github/workflows/rebuild-pdfs.yml` assembles those fragments, builds all four bilingual PDF variants, validates page counts, content markers and Git object hashes, verifies the backward-compatible aliases, and commits the exact binaries only when they changed.
+
+The generator currently includes the full historical project archive plus the current public projects from `oemjoe`, including ERP TMS - Laravel Modernization and Tirta AI Data & System Analysis Dashboard.
+
+A PDF rebuild runs automatically when files under `pdfsrc/generator/**` or the rebuild workflow itself change. It can also be started manually with `workflow_dispatch` from GitHub Actions.
+
 ## Contact
 
 - Email: [umarjunaedi@gmail.com](mailto:umarjunaedi@gmail.com)
@@ -54,7 +63,7 @@ The site switches the download target automatically according to the selected la
 - [GitHub - oemjoen](https://github.com/oemjoen)
 - [GitHub projects - oemjoe](https://github.com/oemjoe)
 
-The portfolio uses the public GitHub profile image as its default profile photo.
+The portfolio uses the professional profile image stored in the repository.
 
 ## Language behavior
 
