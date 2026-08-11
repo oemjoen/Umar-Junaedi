@@ -133,6 +133,13 @@ function updateControlLabels(language) {
     : (menuOpen ? 'Tutup menu' : 'Buka menu'));
 }
 
+function updatePdfLinks(language) {
+  const suffix = language === 'en' ? 'EN' : 'ID';
+  document.querySelectorAll('a[href*="Umar-Junaedi-CV"]').forEach(link => {
+    link.href = `Umar-Junaedi-CV-${suffix}.pdf`;
+  });
+}
+
 function setLanguage(language, persist = false) {
   const selected = language === 'en' ? 'en' : 'id';
   document.documentElement.lang = selected;
@@ -147,6 +154,7 @@ function setLanguage(language, persist = false) {
   });
   languageContents.forEach(content => { content.hidden = content.dataset.langContent !== selected; });
   renderOemjoeCvProjects(selected);
+  updatePdfLinks(selected);
   updateControlLabels(selected);
   if (persist) localStorage.setItem('umar-language', selected);
 }
