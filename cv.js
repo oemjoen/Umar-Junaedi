@@ -62,6 +62,49 @@ function detectedLanguage() {
   }
 }
 
+function enhanceEnglishCv() {
+  const section = document.querySelector('[data-lang-content="en"]');
+  if (!section) return;
+  const entries = section.querySelectorAll('.cv-entry');
+  if (entries.length < 3) return;
+
+  const details = [
+    {
+      period: 'Mar 2021 - Present',
+      bullets: [
+        'Own annual IT budgeting, work planning, priorities, team timetables, and KPI assessment.',
+        'Manage vendors, budget and work-plan monitoring, and day-to-day IT support operations.',
+        'Lead ERP development for a logistics ecosystem, including GPS Tracking, WMS, Fuel Management, P2H, Tire Management, and Fleet Management.',
+        'Connect user needs, business processes, data, and technology decisions, while contributing directly to system development when needed.'
+      ]
+    },
+    {
+      period: 'Jan 2013 - Mar 2020',
+      bullets: [
+        'Built an integrated information system for a pharmaceutical distribution company, replacing manual processes with applications tailored to business needs.',
+        'Developed and integrated SST ERP, GPS Call Salesman, GPS Collector, SST BPOM-Kemenkes, SST APMITRA, SST GL, and HALLOBIDAN.',
+        'Owned IT strategic planning, vendor management, major projects, budgets, priorities, standards, procedures, and overall IT performance.',
+        'Coordinated priorities between IT and business departments and reviewed the adequacy and allocation of IT resources.'
+      ]
+    },
+    {
+      period: 'Earlier career',
+      bullets: [
+        'Worked as Assistant Project Manager across system requirements, user requirements, project preparation, QA, implementation, and support.',
+        'Later led application support scheduling, issue severity management, root-cause analysis, resolution, documentation, and activity reporting.',
+        'Built hands-on experience in implementation, application analysis, QA/support, networking, financial software, databases/reporting, programming, installation, maintenance, and deployment.'
+      ]
+    }
+  ];
+
+  entries.forEach((entry, index) => {
+    const metaDate = entry.querySelector('.cv-entry-meta span:first-child');
+    if (metaDate) metaDate.textContent = details[index].period;
+    const list = entry.querySelector('ul');
+    if (list) list.innerHTML = details[index].bullets.map(item => `<li>${item}</li>`).join('');
+  });
+}
+
 function ensureOemjoeCvProfileLink(language) {
   const contactCard = document.querySelector('.cv-contact-card');
   if (!contactCard) return;
@@ -131,6 +174,22 @@ function updateControlLabels(language) {
   menuToggle?.setAttribute('aria-label', isEnglish
     ? (menuOpen ? 'Close menu' : 'Open menu')
     : (menuOpen ? 'Tutup menu' : 'Buka menu'));
+
+  document.title = isEnglish ? 'Umar Junaedi - Full CV' : 'Umar Junaedi - CV Lengkap';
+  const metaDescription = document.querySelector('meta[name="description"]');
+  if (metaDescription) {
+    metaDescription.content = isEnglish
+      ? 'Full CV of Umar Junaedi - Senior IT Manager, enterprise systems, digital transformation, and IT infrastructure.'
+      : 'CV lengkap Umar Junaedi - Senior IT Manager, enterprise systems, digital transformation, dan IT infrastructure.';
+  }
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.content = isEnglish ? 'Umar Junaedi - Full CV' : 'Umar Junaedi - CV Lengkap';
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogDescription) {
+    ogDescription.content = isEnglish
+      ? 'Curriculum Vitae of Umar Junaedi, Senior IT Manager.'
+      : 'Curriculum Vitae Umar Junaedi, Senior IT Manager.';
+  }
 }
 
 function updatePdfLinks(language) {
@@ -153,6 +212,7 @@ function setLanguage(language, persist = false) {
     element.textContent = element.dataset[selected];
   });
   languageContents.forEach(content => { content.hidden = content.dataset.langContent !== selected; });
+  enhanceEnglishCv();
   renderOemjoeCvProjects(selected);
   updatePdfLinks(selected);
   updateControlLabels(selected);
