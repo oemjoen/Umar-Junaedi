@@ -56,8 +56,8 @@ jobs:
           expected = {
               'Umar-Junaedi-CV-ID.pdf': (5, '68346f26ca4e19dddd73380ae6bb9dc14292624d'),
               'Umar-Junaedi-CV-EN.pdf': (5, 'bed2842561f384eb3e1cd0655bcb88c8b30f8966'),
-              'Umar-Junaedi-Portfolio-ID.pdf': (3, '6c2b2a9d15daa2bdccd5bb7dfc4040e98088e67b'),
-              'Umar-Junaedi-Portfolio-EN.pdf': (3, '0d515e224c4a2a4e9a568434cc542b2dfd61664f'),
+              'Umar-Junaedi-Portfolio-ID.pdf': (2, '781815694dbf06ab124d8798f4aaa584a450c199'),
+              'Umar-Junaedi-Portfolio-EN.pdf': (2, 'f7627e54ff64b8ceddf0fd04e8f429b96928845f'),
           }
           for name, (pages, expected_hash) in expected.items():
               p = Path(name)

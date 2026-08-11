@@ -17,30 +17,19 @@
             Paragraph(escape(p['tags']),st['tag'])
         ]))
 
-    story += section_title('Operating Model' if lang=='en' else 'Cara Kerja',st)
-    model_id=[
-        ('1. Understand','Memahami proses bisnis, pain point, data, user, risiko, dan kebutuhan operasional.'),
-        ('2. Design','Menentukan arsitektur, integrasi, prioritas, standar keamanan, dan delivery plan.'),
-        ('3. Build','Membangun atau memodernisasi aplikasi, API, workflow, deployment, dan dokumentasi.'),
-        ('4. Run & Improve','Monitoring, troubleshooting, support, feedback loop, hardening, dan continuous improvement.')
-    ]
-    model_en=[
-        ('1. Understand','Map business processes, pain points, data, users, risks, and operational needs.'),
-        ('2. Design','Define architecture, integrations, priorities, security standards, and delivery plans.'),
-        ('3. Build','Build or modernize applications, APIs, workflows, deployments, and documentation.'),
-        ('4. Run & Improve','Monitor, troubleshoot, support, harden, and continuously improve services.')
-    ]
-    story.append(two_col_cards(model_id if lang=='id' else model_en,st))
-
     story += section_title('Technology & Domains',st)
     story.append(Paragraph(escape('PHP, Laravel, CodeIgniter, JavaScript, React, React Native, REST API, MySQL, MariaDB, Ubuntu Server, Apache, Nginx, Docker, Cloudflare, n8n, monitoring, security, AI provider integration (Groq/Gemini/Ollama), Redis.'),st['body']))
     story.append(Paragraph(escape('ERP, HRIS, FMS/WMS, fleet, trucking, warehouse, finance, procurement, payroll, attendance, pharmaceutical distribution, education technology, system analysis, data analysis, automation.'),st['body']))
 
-    story += section_title('GitHub & Contact',st)
+    story.append(Spacer(1,3))
+    story.append(Paragraph('GitHub & Contact',st['h2']))
     story.append(contact_para(lang,st))
-    story.append(Paragraph(link('Online Portfolio',CONTACTS['portfolio']),st['body']))
-    story.append(Paragraph(link('Current GitHub Projects - oemjoe',CONTACTS['github_projects']),st['body']))
-    story.append(Paragraph(link('Main GitHub - oemjoen',CONTACTS['github_main']),st['body']))
+    story.append(Paragraph(
+        ' &nbsp; | &nbsp; '.join([
+            link('Online Portfolio',CONTACTS['portfolio']),
+            link('Current GitHub Projects - oemjoe',CONTACTS['github_projects']),
+            link('Main GitHub - oemjoen',CONTACTS['github_main'])
+        ]), st['small']))
     doc.build(story,onFirstPage=lambda c,d:page_footer(c,d,lang),onLaterPages=lambda c,d:page_footer(c,d,lang))
 
 
